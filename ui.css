@@ -2,28 +2,42 @@
     all: initial;
   }
   
+  /* ==========================================
+     Gemiside UI Theme Overrides
+     ========================================== */
+  
+  /* Lightened Translucent Glass Effect */
   .gemiside-workspace {
     position: fixed;
     z-index: 2147483647;
     width: 400px;
     height: 500px;
-    background: rgba(22, 22, 26, 0.82);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(30, 30, 36, 0.65); 
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 14px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
     color: #e3e3e8;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     user-select: none;
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
   }
   
+  /* Purple Focus Glow */
   .gemiside-workspace:focus-within {
-    border-color: rgba(66, 133, 244, 0.4);
+    border-color: rgba(161, 94, 255, 0.6);
+    box-shadow: 0 0 0 1px rgba(161, 94, 255, 0.2), 0 24px 60px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Header Controls Layout */
+  .gemiside-header-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
   }
   
   .gemiside-header {
@@ -45,32 +59,77 @@
     font-size: 13px;
     letter-spacing: 0.02em;
     color: #f1f1f5;
-    display: flex;
-    align-items: center;
-    gap: 6px;
   }
   
-  .gemiside-close-action {
+  .gemiside-icon-btn {
     background: transparent;
     border: none;
     color: #8e8e93;
     cursor: pointer;
-    font-size: 16px;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.15s ease;
   }
   
-  .gemiside-close-action:hover {
+  .gemiside-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+  
+  .gemiside-close-btn:hover {
     background: rgba(255, 59, 48, 0.15);
     color: #ff453a;
   }
   
-  .gemiside-scroller {
+  /* Uniform SVG Line Sizing */
+  .gemiside-icon-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2px;
+  }
+  
+  /* ==========================================
+     Action Chip (The Trigger Button)
+     ========================================== */
+  .gemiside-action-chip {
+    position: absolute;
+    z-index: 2147483646;
+    background: #2a2a30;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translate(-50%, -130%);
+    pointer-events: auto;
+    transition: background 0.15s ease;
+    white-space: nowrap; 
+  }
+  
+  .gemiside-action-chip:hover {
+    background: #3a3a42;
+  }
+  
+  /* ==========================================
+     Main Window Layout Elements
+     ========================================== */
+  /* ==========================================
+   Main Window Layout & Empty State
+   ========================================== */
+.gemiside-scroller {
     flex: 1;
     padding: 18px;
     overflow-y: auto;
     user-select: text;
+    position: relative; /* Required for centering the empty state */
+    display: flex;
+    flex-direction: column;
   }
   
   .gemiside-scroller::-webkit-scrollbar {
@@ -82,15 +141,33 @@
     border-radius: 3px;
   }
   
-  .gemiside-context-pill {
-    font-size: 11px;
-    background: rgba(66, 133, 244, 0.1);
-    border: 1px solid rgba(66, 133, 244, 0.15);
-    color: #8ab4f8;
-    padding: 8px 12px;
-    border-radius: 6px;
-    margin-bottom: 16px;
-    line-height: 1.4;
+  /* New: Centered, fading empty state text */
+  /* New: Centered, fading empty state text */
+.gemiside-empty-state {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Spacing between the three lines */
+    color: rgba(255, 255, 255, 0.35);
+    opacity: 0;
+    pointer-events: none; 
+    animation: fadeFloatIn 0.8s ease-out 0.1s forwards;
+  
+    /* --- TYPOGRAPHY UPGRADES --- */
+    font-family: "Google Sans", "Product Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 26px;      /* ⬅️ Increased from 16px to take center stage */
+    font-weight: 600;     /* Bolder weight to support the larger size */
+    letter-spacing: -0.5px; /* Tighter letter spacing for a premium feel */
+    line-height: 1.1;     /* Keeps the multi-line block tightly grouped */
+  }
+  
+  @keyframes fadeFloatIn {
+    0% { opacity: 0; transform: translate(-50%, -40%); } /* Starts slightly lower */
+    100% { opacity: 1; transform: translate(-50%, -50%); } /* Floats up into center */
   }
   
   .gemiside-message-log {
@@ -99,6 +176,9 @@
     color: #d1d1d6;
   }
   
+  /* ==========================================
+     Input Field & Placeholder
+     ========================================== */
   .gemiside-footer {
     padding: 14px;
     background: rgba(0, 0, 0, 0.15);
@@ -125,23 +205,97 @@
     box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.15);
   }
   
-  .gemiside-action-chip {
-    position: absolute;
-    z-index: 2147483646;
-    background: #2a2a30;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
+  /* TWEAK INTENSITY HERE: Adjust the 0.5 (alpha) between 0.1 and 1.0 */
+  .gemiside-input-field::placeholder {
+    color: rgba(255, 255, 255, 0.5); 
+  }
+  
+  /* ==========================================
+     Context Accordion Dropdown (Partitioned)
+     ========================================== */
+  .gemiside-context-accordion {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  
+  /* Flexbox allows us to split the text and arrow into separate hover zones */
+  .gemiside-context-accordion summary {
+    display: flex;
+    align-items: stretch;
+    list-style: none;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transform: translate(-50%, -130%);
-    pointer-events: auto;
+    user-select: none;
+    border-radius: 6px;
+    overflow: hidden; 
+  }
+  
+  .gemiside-context-accordion summary::-webkit-details-marker {
+    display: none;
+  }
+  
+  /* The Text Side */
+  .gemiside-summary-text {
+    flex: 1;
+    font-size: 11px;
+    color: #8ab4f8;
+    padding: 8px 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
     transition: background 0.15s ease;
   }
   
-  .gemiside-action-chip:hover {
-    background: #3a3a42;
+  .gemiside-summary-text:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  /* The Arrow Side */
+  .gemiside-summary-arrow {
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: background 0.15s ease;
+  }
+  
+  .gemiside-summary-arrow:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  /* The 75% Partition Line */
+  .gemiside-summary-arrow::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12.5%; /* Pushes it down to perfectly center a 75% height line */
+    height: 75%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.15);
+  }
+  
+  .gemiside-summary-arrow-icon {
+    font-size: 8px;
+    color: #8e8e93;
+    transition: transform 0.2s ease;
+  }
+  
+  /* Expanded States */
+  .gemiside-context-accordion[open] .gemiside-summary-text {
+    white-space: normal; 
+  }
+  
+  .gemiside-context-accordion[open] .gemiside-summary-arrow-icon {
+    transform: rotate(180deg);
+  }
+  
+  .gemiside-context-full {
+    font-size: 11px;
+    color: #d1d1d6;
+    padding: 10px 12px;
+    line-height: 1.5;
+    white-space: pre-wrap; 
   }

@@ -63,10 +63,9 @@
       chip.style.left = `${x}px`;
       chip.style.top = `${y}px`;
   
-      // Changed to 'mousedown' for instant execution, avoiding 'mouseup' conflicts
-    buttonNode.addEventListener('mousedown', (e) => {
-        e.preventDefault(); // Prevents the browser from clearing your text selection
-        e.stopPropagation(); // Blocks the global click-outside listener
+      buttonNode.addEventListener('mousedown', (e) => {
+        e.preventDefault(); 
+        e.stopPropagation(); 
         
         instantiateWorkspaceWindow(x, y + 25, contextText, associatedCode);
         removeExistingActionChip();
@@ -95,25 +94,82 @@
       const container = document.createElement('div');
       container.className = 'gemiside-workspace';
       container.innerHTML = `
-        <div class="gemiside-header">
-          <div class="gemiside-title">GemiSide Workspace</div>
-          <button class="gemiside-close-action">✕</button>
+      <div class="gemiside-header">
+        <div class="gemiside-title">GemiSide</div>
+        <div class="gemiside-header-controls">
+          <button class="gemiside-icon-btn" title="New Thread">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <button class="gemiside-icon-btn" title="Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </button>
+          <button class="gemiside-icon-btn" title="Minimize">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14"/></svg>
+          </button>
+          <button class="gemiside-icon-btn gemiside-close-btn" title="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
         </div>
-        <div class="gemiside-scroller">
-          <div class="gemiside-context-pill"><strong>Context target:</strong> "${textContext.substring(0, 120)}..."</div>
-          <div class="gemiside-message-log">System runtime ready. Awaiting contextual follow-up query.</div>
+      </div>
+      <div class="gemiside-scroller">
+        
+        <details class="gemiside-context-accordion">
+          <summary>
+            <div class="gemiside-summary-text">${textContext}</div>
+            <div class="gemiside-summary-arrow">
+              <span class="gemiside-summary-arrow-icon">▼</span>
+            </div>
+          </summary>
+          <div class="gemiside-context-full">${textContext}</div>
+        </details>
+        
+        <div class="gemiside-empty-state">
+          <span>Hit me</span>
+          <span>with a</span>
+          <span>follow up...</span>
         </div>
-        <div class="gemiside-footer">
-          <input type="text" class="gemiside-input-field" placeholder="Ask a targeted sub-question...">
-        </div>
-      `;
+        
+        <div class="gemiside-message-log"></div>
+      </div>
+      
+      <div class="gemiside-footer">
+        <input type="text" class="gemiside-input-field" placeholder="Ask GemiSide">
+      </div>
+    `;
   
+      // 1. APPEND ELEMENTS FIRST
       shadow.appendChild(container);
       document.body.appendChild(host);
   
-      // Bind event hooks
-      shadow.querySelector('.gemiside-close-action').addEventListener('click', () => host.remove());
+      // 2. BIND LISTENERS AFTER APPENDING
+      shadow.querySelector('.gemiside-close-btn').addEventListener('click', () => host.remove());
       enableDragCapabilities(container, host);
+  
+      // 3. BIND CHAT INPUT LOGIC
+      const inputField = shadow.querySelector('.gemiside-input-field');
+      const messageLog = shadow.querySelector('.gemiside-message-log');
+  
+      inputField.addEventListener('keydown', async (event) => {
+        if (event.key === 'Enter' && inputField.value.trim().length > 0) {
+          const userQuery = inputField.value.trim();
+          inputField.value = ''; 
+  
+          // --> NEW: Annihilate the empty state the moment they hit Enter
+          const emptyState = shadow.querySelector('.gemiside-empty-state');
+          if (emptyState) emptyState.remove();
+  
+          appendMessageToWorkspace(messageLog, 'User', userQuery);
+          const indicatorNode = appendMessageToWorkspace(messageLog, 'GemiSide', 'Connecting to session data stream...');
+  
+          try {
+            setTimeout(() => {
+              indicatorNode.textContent = "Context bound. Ready to connect network parsing layers.";
+            }, 800);
+          } catch (error) {
+            indicatorNode.textContent = "Error routing request loop.";
+          }
+        }
+      });
     }
   
     function enableDragCapabilities(headerTrigger, elementTarget) {
@@ -145,16 +201,39 @@
     }
   
     function clearActionChipOnOutsideClick(event) {
-        if (!activeActionChip) return;
-    
-        // Use composedPath to check if the click originated inside the shadow tree
-        const clickPath = event.composedPath();
-        const clickedInsideChip = clickPath.some(node => 
-          node === activeActionChip || (node.classList && node.classList.contains('gemiside-action-chip'))
-        );
-    
-        if (!clickedInsideChip) {
-          setTimeout(removeExistingActionChip, 10);
-        }
+      if (!activeActionChip) return;
+  
+      const clickPath = event.composedPath();
+      const clickedInsideChip = clickPath.some(node => 
+        node === activeActionChip || (node.classList && node.classList.contains('gemiside-action-chip'))
+      );
+  
+      if (!clickedInsideChip) {
+        setTimeout(removeExistingActionChip, 10);
       }
+    }
+  
+    function appendMessageToWorkspace(logContainer, role, text) {
+      const wrapper = document.createElement('div');
+      wrapper.style.marginBottom = '12px';
+      wrapper.style.borderLeft = role === 'User' ? '2px solid rgba(255,255,255,0.2)' : '2px solid #4285f4';
+      wrapper.style.paddingLeft = '8px';
+      
+      const metaNode = document.createElement('strong');
+      metaNode.style.display = 'block';
+      metaNode.style.fontSize = '11px';
+      metaNode.style.color = role === 'User' ? '#8e8e93' : '#8ab4f8';
+      metaNode.textContent = role;
+  
+      const bodyNode = document.createElement('span');
+      bodyNode.textContent = text;
+  
+      wrapper.appendChild(metaNode);
+      wrapper.appendChild(bodyNode);
+      logContainer.appendChild(wrapper);
+      
+      logContainer.parentElement.scrollTop = logContainer.parentElement.scrollHeight;
+  
+      return bodyNode; 
+    }
   })();
