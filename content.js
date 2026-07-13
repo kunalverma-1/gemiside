@@ -63,8 +63,11 @@
       chip.style.left = `${x}px`;
       chip.style.top = `${y}px`;
   
-      buttonNode.addEventListener('click', (e) => {
-        e.stopPropagation();
+      // Changed to 'mousedown' for instant execution, avoiding 'mouseup' conflicts
+    buttonNode.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // Prevents the browser from clearing your text selection
+        e.stopPropagation(); // Blocks the global click-outside listener
+        
         instantiateWorkspaceWindow(x, y + 25, contextText, associatedCode);
         removeExistingActionChip();
       });
@@ -142,8 +145,16 @@
     }
   
     function clearActionChipOnOutsideClick(event) {
-      if (activeActionChip && !activeActionChip.contains(event.target)) {
-        setTimeout(removeExistingActionChip, 10);
+        if (!activeActionChip) return;
+    
+        // Use composedPath to check if the click originated inside the shadow tree
+        const clickPath = event.composedPath();
+        const clickedInsideChip = clickPath.some(node => 
+          node === activeActionChip || (node.classList && node.classList.contains('gemiside-action-chip'))
+        );
+    
+        if (!clickedInsideChip) {
+          setTimeout(removeExistingActionChip, 10);
+        }
       }
-    }
   })();
