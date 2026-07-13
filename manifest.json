@@ -1,0 +1,29 @@
+{
+    "manifest_version": 3,
+    "name": "GemiSide",
+    "version": "1.0.0",
+    "description": "Enables independent, non-linear contextual threads within Gemini.",
+    "permissions": [
+      "activeTab",
+      "storage"
+    ],
+    "host_permissions": [
+      "https://gemini.google.com/*"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://gemini.google.com/*"],
+        "js": ["content.js"],
+        "run_at": "document_end"
+      }
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": ["ui.css"],
+        "matches": ["https://gemini.google.com/*"]
+      }
+    ]
+  }
