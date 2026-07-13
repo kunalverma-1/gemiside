@@ -5,6 +5,7 @@
     "description": "Enables independent, non-linear contextual threads within Gemini.",
     "permissions": [
       "activeTab",
+      "scripting",
       "storage"
     ],
     "host_permissions": [

@@ -299,3 +299,387 @@
     line-height: 1.5;
     white-space: pre-wrap; 
   }
+
+  /* ==========================================
+   Markdown & Code Block Rendering Engine
+   ========================================== */
+
+/* Core text styling inside the chat interface */
+.gemiside-text-line {
+    margin: 0 0 10px 0;
+    line-height: 1.5;
+    font-size: 14px;
+    color: #e3e3e3;
+    display: block;
+  }
+  
+  /* Headers styling */
+  .gemiside-h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 18px 0 8px 0;
+    color: #ffffff;
+  }
+  
+  .gemiside-h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 16px 0 8px 0;
+    color: #ffffff;
+  }
+  
+  /* Premium Dark-Mode Code Blocks */
+  .gemiside-code-block {
+    background: rgba(18, 18, 18, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 12px 0;
+    overflow-x: auto;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  }
+  
+  .gemiside-code-block pre {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .gemiside-code-block code {
+    color: #a9b7c6;
+    font-size: 13px;
+    line-height: 1.4;
+    white-space: pre-wrap; /* Crucial: Preserves code structure & wrapping */
+  }
+  
+  /* Inline Code tags (e.g., variable names) */
+  .gemiside-inline-code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 13px;
+    color: #f2a4a4;
+  }
+  
+  /* Math symbols styling */
+  .gemiside-math {
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+    font-style: italic;
+    color: #ffca28;
+    font-weight: 600;
+  }
+
+  /* ==========================================
+   Gemini Chat Bubbles Re-engineering
+   ========================================== */
+.gemiside-message-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+  
+  .gemiside-msg-user {
+    align-self: flex-end;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    padding: 10px 14px;
+    border-radius: 18px 18px 4px 18px;
+    max-width: 80%;
+    font-size: 13.5px;
+    line-height: 1.45;
+    user-select: text;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .gemiside-msg-model {
+    align-self: flex-start;
+    color: #e3e3e8;
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.55;
+    user-select: text;
+  }
+  
+  /* ==========================================
+     Dynamic Input Row & Send Button
+     ========================================== */
+  .gemiside-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .gemiside-footer {
+    padding: 14px;
+    background: rgba(0, 0, 0, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important; /* Clean partition rule line */
+  }
+  
+  /* Shift input padding right to prevent text overlap with the button */
+  .gemiside-input-field {
+    padding-right: 44px !important;
+  }
+  
+  .gemiside-send-btn {
+    position: absolute;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: rgba(255, 255, 255, 0.3);
+    cursor: not-allowed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
+  }
+  
+  .gemiside-send-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    transition: transform 0.2s ease;
+  }
+  
+  /* Activated State matching Native Gemini */
+  .gemiside-send-btn.active {
+    background: #4285f4 !important;
+    color: #ffffff !important;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.4);
+  }
+  
+  .gemiside-send-btn.active:hover {
+    background: #357ae8 !important;
+  }
+  
+  /* ==========================================
+     Bouncing "Thinking..." Loading Dots
+     ========================================== */
+  .gemiside-loader-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    color: #8e8e93;
+    font-size: 13.5px;
+    font-family: sans-serif;
+  }
+  
+  .gemiside-bouncing-dots {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 14px;
+  }
+  
+  .gemiside-bouncing-dots span {
+    width: 6px;
+    height: 6px;
+    background: #8ab4f8;
+    border-radius: 50%;
+    display: inline-block;
+    animation: gemisideBallBounce 1.4s infinite ease-in-out both;
+  }
+  
+  .gemiside-bouncing-dots span:nth-child(1) { animation-delay: -0.32s; }
+  .gemiside-bouncing-dots span:nth-child(2) { animation-delay: -0.16s; }
+  
+  @keyframes gemisideBallBounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1.2) translateY(-6px); opacity: 1; }
+  }
+
+  /* ==========================================
+   Settings Menu Overlay
+   ========================================== */
+/* The Blurred Background Overlay */
+/* Clean, Light-Mode Settings Overlay */
+/* --- THE UNIFIED GLASS SETTINGS MENU --- */
+.gemiside-settings-overlay {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 45px);
+    /* The Glass Effect is Back */
+    background: rgba(45, 45, 45, 0.65) !important; 
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    display: none;
+    flex-direction: column;
+    padding: 24px;
+    z-index: 10;
+    box-sizing: border-box;
+    color: #ffffff;
+  }
+  
+  .gemiside-settings-overlay.active {
+    display: flex;
+  }
+  
+  /* Header & Subtext */
+  .gemiside-settings-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+  
+  .gemiside-settings-sub {
+    font-size: 12px;
+    color: #bbbbbb !important;
+    margin-bottom: 24px !important;
+  }
+  
+  .gemiside-settings-sub a {
+    color: #8ab4f8 !important;
+    text-decoration: none;
+  }
+  
+  /* Form Groups Layout */
+  .gemiside-settings-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+    gap: 6px;
+  }
+  
+  .gemiside-settings-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #aaaaaa;
+  }
+  
+  /* Frosted Inputs & Dropdown */
+  .gemiside-settings-input, .gemiside-select {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    padding: 10px 12px !important;
+    border-radius: 8px !important;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: border 0.2s, background 0.2s;
+  }
+  
+  .gemiside-settings-input:focus, .gemiside-select:focus {
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+  }
+  
+  /* Dropdown Options (Ensures text is readable when expanded) */
+  .gemiside-select option {
+    background: #2a2a2a;
+    color: #ffffff;
+  }
+  
+  /* Unified Save Button */
+  .gemiside-settings-save {
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    padding: 10px 12px !important;
+    border-radius: 8px !important;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  
+  .gemiside-settings-save:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+  }
+  
+  /* Footer with Dividing Line */
+  .gemiside-about {
+    margin-top: auto; /* Pushes footer to the bottom */
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* The subtle dividing line */
+    text-align: center;
+    color: #aaaaaa;
+    font-size: 11px;
+    width: 100%;
+  }
+  
+  .gemiside-about a {
+    color: #8ab4f8;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  /* --- QUICK ACTION CHIPS --- */
+.gemiside-quick-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  .gemiside-quick-actions::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+  
+  .gemiside-action-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #a1a1aa;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 6px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .gemiside-action-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+  }
+  /* --- STEP 4: FLUID UX ANIMATIONS (Premium Polish) --- */
+
+/* 1. Spring-loaded Minimize & Maximize */
+.gemiside-workspace {
+    transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease !important;
+    overflow: hidden !important; 
+  }
+  
+  /* 2. Slide-up Settings Drawer (Replacing the hard snap) */
+  .gemiside-settings-overlay {
+    /* Position it just off the bottom of the screen */
+    transform: translateY(100%) scale(0.98);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s !important;
+    z-index: 100;
+  }
+  
+  /* When the gear icon is clicked, slide it up and fade it in */
+  .gemiside-settings-overlay.active {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* 3. Smooth input field focus glow */
+  .gemiside-input-field {
+    transition: all 0.3s ease !important;
+  }
+  .gemiside-input-field:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+  }

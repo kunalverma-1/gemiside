@@ -1,4 +1,8 @@
+# Ignore local development files
 .DS_Store
-*.log
+*.pem
 node_modules/
-.env
+
+# Ignore local storage or testing config files if you have any
+config.json
+keys.txt
