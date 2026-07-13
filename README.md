@@ -26,5 +26,12 @@ Highlight any code or text on a page to trigger the "Ask GemiSide" chip. Clickin
 ### Security
 This project does not store your API key in the source code. Keep your credentials secure by managing them only through the extension's internal settings menu.
 
+## Why GemiSide instead of the built-in browser assistant?
+- Open multiple independent AI workspaces on the same page.
+- Keep different conversations for different problems.
+- Drag panels anywhere instead of being locked to the browser sidebar.
+- Keep an assistant next to the exact section of documentation or code you're reading.
+- Automatically capture page context without constant copy-pasting.
+
 ### Why I built this
 I wanted a way to query my technical documentation without constantly alt-tabbing to a browser window. GemiSide keeps my workspace focused and gets the AI out of the way.
