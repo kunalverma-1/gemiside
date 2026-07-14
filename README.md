@@ -5,7 +5,7 @@ A lightweight, context-aware Chrome extension for deep-work developers.
 GemiSide is a side-panel assistant that lets you query Gemini directly on top of your current browser tab. It is designed to remove the friction of context-switching when you are debugging code, reading technical documentation, or working through problems.
 
 ### Features
-* **In-Page Context**: The extension scrapes the active tab's content and code blocks, so you do not have to copy-paste.
+* **Smart Context Engine**: The extension doesn't just copy text—it actively traverses the DOM. If you highlight a runtime error, GemiSide automatically hunts down the parent code block and packages them together so the AI understands the full architecture of the bug.
 * **Transient UI**: The workspace slides into view when you need it and snaps away when you are done.
 * **Preset Actions**: One-click shortcuts for common tasks:
     * **Explain Bug**: Pinpoints logic errors.
@@ -35,3 +35,8 @@ This project does not store your API key in the source code. Keep your credentia
 
 ### Why I built this
 I wanted a way to query my technical documentation without constantly alt-tabbing to a browser window. GemiSide keeps my workspace focused and gets the AI out of the way.
+
+### 🗺️ Roadmap (Future Enhancements)
+* **Native Voice-to-SubChat**: Adding a microphone integration for hands-free "side quest" queries.
+* **Markdown Export**: A utility to compile your main chat and all nested GemiSide windows into a single, clean study guide.
+* **Claude Integration**: Expanding the Smart Context Engine to map Anthropic's DOM structure.

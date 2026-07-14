@@ -61,8 +61,9 @@ function formatGemiSideMarkdown(text) {
   
     function handleTextSelection(event) {
       const selection = window.getSelection();
-      const rawText = selection.toString().trim();
+      if (!selection || selection.rangeCount === 0) return;
   
+      const rawText = selection.toString().trim();
       if (rawText.length === 0) return;
   
       const anchorElement = selection.anchorNode.parentElement;
@@ -81,13 +82,30 @@ function formatGemiSideMarkdown(text) {
       const posX = lastRect.left + window.scrollX + (lastRect.width / 2);
       const posY = lastRect.top + window.scrollY;
   
-      // Parse and bind parent execution context elements if applicable
-      const rootBlock = anchorElement.closest('message-content') || anchorElement.parentElement;
-      const secondaryCodeBlocks = Array.from(rootBlock.querySelectorAll(DOM_TARGETS.codeBlocks.join(',')))
-        .map(el => el.textContent.trim())
-        .join('\n\n');
+      // --- THE SMART CONTEXT ENGINE (DOM CRAWLER) ---
+      let container = range.commonAncestorContainer;
+      
+      // If the browser returns a raw Text Node, step up to its HTML wrapper
+      if (container.nodeType === 3) { 
+          container = container.parentNode;
+      }
   
-      renderActionChip(posX, posY, rawText, secondaryCodeBlocks);
+      // Traverse UP the tree looking for code blocks
+      const parentCodeBlock = container.closest('pre, code, .code-block, [class*="code"]');
+      let smartContext = rawText;
+  
+      // If a parent block is found, package it together!
+      if (parentCodeBlock) {
+          const fullCodeContext = parentCodeBlock.innerText.trim();
+          
+          // Prevent duplicating text if you highlighted the whole block
+          if (fullCodeContext !== rawText && fullCodeContext.includes(rawText)) {
+              smartContext = `[Parent Code Context]:\n${fullCodeContext}\n\n[Highlighted Target]:\n${rawText}`;
+          }
+      }
+  
+      // Pass the perfectly packaged smartContext directly to the UI
+      renderActionChip(posX, posY, smartContext, "");
     }
   
     function renderActionChip(x, y, contextText, associatedCode) {

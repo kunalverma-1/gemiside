@@ -616,11 +616,12 @@
     font-weight: 500;
   }
   /* --- QUICK ACTION CHIPS --- */
-.gemiside-quick-actions {
+  .gemiside-quick-actions {
     display: flex;
     gap: 8px;
     margin-bottom: 12px;
     overflow-x: auto;
+    padding-top: 4px;    /* ⬅️ ADDED: Gives the buttons room to float upward */
     padding-bottom: 4px;
     scrollbar-width: none; /* Firefox */
   }
